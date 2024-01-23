@@ -1,5 +1,6 @@
 ﻿@page "/weather"
 @attribute [StreamRendering]
+@inject HttpClient Http
 
 <PageTitle>Database test</PageTitle>
 
@@ -7,43 +8,40 @@
 
 @if (_articles == null)
 {
-    <p><em>Loading...</em></p>
+  <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var article in _articles)
-            {
-                <tr>
-                    <td>@article.Id</td>
-                    <td>@article.Title</td>
-                    <td>@article.Body</td>
-                    <td>@article.Category</td>
-                </tr>
-            }
-        </tbody>
-       
-    </table>
-    <p>@_json</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Temp. (C)</th>
+        <th>Temp. (F)</th>
+        <th>Summary</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var article in _articles)
+      {
+        <tr>
+          <td>@article.Id</td>
+          <td>@article.Title</td>
+          <td>@article.Body</td>
+          <td>@article.Category</td>
+        </tr>
+      }
+    </tbody>
+
+  </table>
 }
 
 @code {
-    private List<Article>? _articles;
-    private string? _json;
-    protected override async Task OnInitializedAsync()
-    {
-        HttpClient client = new HttpClient();
-        client.BaseAddress = new Uri("https://localhost:7179");
-        _json = await client.GetStringAsync("/api/article");
-        _articles = System.Text.Json.JsonSerializer.Deserialize<List<Article>> (_json);
-    }
+  private Article[]? _articles;
+  protected override async Task OnInitializedAsync()
+  {
+
+    _articles = await Http.GetFromJsonAsync<Article[]>("https://localhost:7179/api/article");
+
+  }
 }
