@@ -1,0 +1,49 @@
+﻿@page "/weather"
+@attribute [StreamRendering]
+
+<PageTitle>Database test</PageTitle>
+
+<h1>Database test</h1>
+
+@if (_articles == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in _articles)
+            {
+                <tr>
+                    <td>@article.Id</td>
+                    <td>@article.Title</td>
+                    <td>@article.Body</td>
+                    <td>@article.Category</td>
+                </tr>
+            }
+        </tbody>
+       
+    </table>
+    <p>@_json</p>
+}
+
+@code {
+    private List<Article>? _articles;
+    private string? _json;
+    protected override async Task OnInitializedAsync()
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://localhost:7179");
+        _json = await client.GetStringAsync("/api/article");
+        _articles = System.Text.Json.JsonSerializer.Deserialize<List<Article>> (_json);
+    }
+}
