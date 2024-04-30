@@ -1,0 +1,34 @@
+﻿@page "/article/{id}"
+@inject HttpClient Http;
+
+<PageTitle>Home</PageTitle>
+
+@if (_article != null)
+{
+    <h1>@_article.Title</h1>
+    <p>@_article.Body</p>
+}
+
+
+Welcome to your new app.
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    private string _api;
+    private Article[]? _articles;
+    private Article? _article;
+    protected override async Task OnInitializedAsync()
+    {
+        _api = "https://localhost:7179/api/article/" + id;
+        await GetArticle();
+    }
+
+    private async Task GetArticle()
+    {
+        _article = await Http.GetFromJsonAsync<Article>(_api);
+    }
+
+
+}

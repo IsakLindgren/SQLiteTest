@@ -31,7 +31,7 @@ else
       @foreach (var article in _filteredArticles)
       {
         <tr>
-          <td>@article.Id</td>
+          <td> <a href="/article/@article.Id">@article.Id</a> </td>
           <td>@article.Title</td>
           <td>@article.Body</td>
           <td>@article.Category</td>
@@ -95,7 +95,7 @@ else
             List<Article> tmp = new();
             foreach (var article in _articles)
             {
-                if (article.Category == filterString)
+                if (article.Category.ToLower() == filterString.ToLower())
                 {
                     tmp.Add(article);
                 }
